@@ -63,6 +63,8 @@
                 app:bubbletab_title_size="16sp"
                 app:bubbletab_vertical_padding="10dp" />
     </androidx.cardview.widget.CardView>
+
+
     <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
