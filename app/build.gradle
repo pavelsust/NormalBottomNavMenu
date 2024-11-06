@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id 'maven-publish' // 2. Add this line
 }
 
 android {
@@ -49,4 +50,20 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
 
     implementation project(":bubbletab")
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.pavelsust'
+            artifactId = 'io.ak1'
+            version = "1.0"
+            pom {
+                description = 'First release'
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
