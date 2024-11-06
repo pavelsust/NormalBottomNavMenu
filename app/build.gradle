@@ -51,19 +51,3 @@ dependencies {
 
     implementation project(":bubbletab")
 }
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.github.pavelsust'
-            artifactId = 'io.ak1'
-            version = "1.0"
-            pom {
-                description = 'First release'
-            }
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
-}
