@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="background">#ffffff</color>
+    <color name="light_background">#f4f4f4</color>
+    <color name="invert">#202020</color>
+
+    <color name="home">#e74c3c</color>
+    <color name="logger">#673AB7</color>
+    <color name="documents">#3498db</color>
+    <color name="settings">#2ecc71</color>
+
+</resources>
