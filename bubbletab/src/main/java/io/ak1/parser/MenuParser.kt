@@ -10,7 +10,7 @@ import androidx.annotation.MenuRes
 import io.ak1.R
 import org.xmlpull.v1.XmlPullParser.*
 
-internal class MenuParser(private val context: Context) {
+class MenuParser(private val context: Context) {
 
     private companion object {
         const val XML_MENU_TAG = "menu"

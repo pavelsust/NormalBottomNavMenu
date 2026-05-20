@@ -1,15 +1,12 @@
-package io.ak1.util
+package com.rock.library
 
+import android.R
 import android.animation.Animator
 import android.animation.ArgbEvaluator
 import android.animation.StateListAnimator
 import android.animation.ValueAnimator
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
-import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -37,7 +34,7 @@ internal fun ImageView.setColorStateListAnimator(
 ) {
     val stateList = StateListAnimator().apply {
         addState(
-            intArrayOf(android.R.attr.state_selected),
+            intArrayOf(R.attr.state_selected),
             colorAnimator(unselectedColor, color, ICON_STATE_ANIMATOR_DURATION)
         )
         addState(

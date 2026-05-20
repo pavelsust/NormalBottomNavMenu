@@ -1,180 +1,122 @@
 package io.ak1
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
-import io.ak1.parser.MenuParser
+import io.ak1.parser.MenuItem
 
-class BubbleTabBar : LinearLayout {
-    private var onBubbleClickListener: OnBubbleClickListener? = null
-    private var disabledIconColorParam: Int = Color.GRAY
-    private var horizontalPaddingParam: Float = 0F
-    private var iconPaddingParam: Float = 0F
-    private var verticalPaddingParam: Float = 0F
-    private var iconSizeParam: Float = 0F
-    private var titleSizeParam: Float = 0F
-    private var cornerRadiusParam: Float = 0F
-    private var customFontParam: Int = 0
-    private var disableTitleColor : Int = Color.GRAY
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+class BubbleTabBar @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
+
+    private lateinit var tabStrip: LinearLayout
+    private var centerBubble: CenterBubble? = null
+    private var oldBubble: Bubble? = null
+    private var clickListener: OnBubbleClickListener? = null
+
+    // Both are resolved from XML attrs (bubbletab_bar_height / bubbletab_center_item_size)
+    // or default to 56 dp / 64 dp respectively.
+    var barHeight: Int = 0
+    var centerItemSize: Int = 0
 
     init {
-        orientation = VERTICAL
-        gravity = Gravity.CENTER
-    }
+        val dp = resources.displayMetrics.density
+        barHeight = (56 * dp).toInt()
+        centerItemSize = (64 * dp).toInt()
 
-    constructor(context: Context) : super(context) {
-        init(context, null)
-    }
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?
-    ) : super(context, attrs) {
-        init(context, attrs)
-    }
-
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
-    }
-
-    fun addBubbleListener(onBubbleClickListener: OnBubbleClickListener) {
-        this.onBubbleClickListener = onBubbleClickListener
-    }
-
-    fun setSelected(position: Int, callListener: Boolean = true) {
-        val it = (this@BubbleTabBar.getChildAt(position) as Bubble)
-
-        val b = it.id
-        if (oldBubble != null && oldBubble!!.id != b) {
-            it.isSelected = !it.isSelected
-            oldBubble!!.isSelected = false
-        }
-        oldBubble = it
-        if (onBubbleClickListener != null && callListener) {
-            onBubbleClickListener!!.onBubbleClick(it.id)
-        }
-    }
-
-    fun setSelectedWithId(@IdRes id: Int, callListener: Boolean = true) {
-        val it = this@BubbleTabBar.findViewById<Bubble>(id) ?: return
-        val b = it.id
-        if (oldBubble != null && oldBubble!!.id != b) {
-            it.isSelected = !it.isSelected
-            oldBubble!!.isSelected = false
-        }
-        oldBubble = it
-        if (onBubbleClickListener != null && callListener) {
-            onBubbleClickListener!!.onBubbleClick(it.id)
-        }
-    }
-
-    private fun init(
-        context: Context,
-        attrs: AttributeSet?
-    ) {
-        orientation = HORIZONTAL
-        gravity = Gravity.CENTER_VERTICAL
         if (attrs != null) {
-            val attributes =
-                context.theme.obtainStyledAttributes(attrs, R.styleable.BubbleTabBar, 0, 0)
-            try {
-                val menuResource =
-                    attributes.getResourceId(R.styleable.BubbleTabBar_bubbletab_menuResource, -1)
-                disabledIconColorParam = attributes.getColor(
-                    R.styleable.BubbleTabBar_bubbletab_disabled_icon_color,
-                    Color.GRAY
-                )
-                customFontParam =
-                    attributes.getResourceId(R.styleable.BubbleTabBar_bubbletab_custom_font, 0)
+            val ta = context.obtainStyledAttributes(attrs, R.styleable.BubbleTabBar, defStyleAttr, 0)
+            barHeight = ta.getDimensionPixelSize(R.styleable.BubbleTabBar_bubbletab_bar_height, barHeight)
+            centerItemSize = ta.getDimensionPixelSize(R.styleable.BubbleTabBar_bubbletab_center_item_size, centerItemSize)
+            ta.recycle()
+        }
 
-                iconPaddingParam = attributes.getDimension(
-                    R.styleable.BubbleTabBar_bubbletab_icon_padding,
-                    resources.getDimension(R.dimen.bubble_icon_padding)
-                )
-                horizontalPaddingParam = attributes.getDimension(
-                    R.styleable.BubbleTabBar_bubbletab_horizontal_padding,
-                    resources.getDimension(R.dimen.bubble_horizontal_padding)
-                )
-                verticalPaddingParam = attributes.getDimension(
-                    R.styleable.BubbleTabBar_bubbletab_vertical_padding,
-                    resources.getDimension(R.dimen.bubble_vertical_padding)
-                )
-                iconSizeParam = attributes.getDimension(
-                    R.styleable.BubbleTabBar_bubbletab_icon_size,
-                    resources.getDimension(R.dimen.bubble_icon_size)
-                )
-                titleSizeParam = attributes.getDimension(
-                    R.styleable.BubbleTabBar_bubbletab_title_size,
-                    resources.getDimension(R.dimen.bubble_icon_size)
-                )
-                cornerRadiusParam = attributes.getDimension(
-                    R.styleable.BubbleTabBar_bubbletab_tab_corner_radius,
-                    resources.getDimension(R.dimen.bubble_corner_radius)
-                )
-                disableTitleColor = attributes.getColor(R.styleable.BubbleTabBar_bubbletab_title_disable_color, Color.GRAY)
-                if (menuResource >= 0) {
-                    setMenuResource(menuResource)
+        tabStrip = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            clipChildren = false
+        }
+
+        clipChildren = false
+        clipToPadding = false
+        addView(tabStrip, LayoutParams(LayoutParams.MATCH_PARENT, barHeight).apply {
+            gravity = Gravity.BOTTOM
+        })
+    }
+
+    fun setMenu(items: List<MenuItem>, centerIndex: Int) {
+        tabStrip.removeAllViews()
+        centerBubble?.let { removeView(it) }
+
+        items.forEachIndexed { index, item ->
+            if (index == centerIndex) {
+                val circleSize = if (item.centerItemSize > 0) item.centerItemSize.toInt() else centerItemSize
+
+                // Empty placeholder so side tabs divide remaining width equally.
+                tabStrip.addView(View(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(circleSize, LayoutParams.MATCH_PARENT)
+                })
+
+                // Center circle: gravity=TOP places top at y=0 (top of this FrameLayout).
+                // translationY = -(circleSize/2) shifts the circle up so its centre sits on the
+                // top edge of the bar — half protruding above, half inside.
+                val bubble = CenterBubble(context, item, circleSize)
+                bubble.layoutParams = LayoutParams(circleSize, circleSize).apply {
+                    gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
                 }
-            } finally {
-                attributes.recycle()
+                bubble.translationY = -circleSize / 2f
+                bubble.setOnClickListener { clickListener?.onBubbleClick(item.id) }
+                centerBubble = bubble
+                addView(centerBubble)
+            } else {
+                val bubble = Bubble(context, item).apply {
+                    layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f)
+                    setOnClickListener {
+                        selectBubble(this)
+                        clickListener?.onBubbleClick(item.id)
+                    }
+                    if (item.checked) {
+                        isSelected = true
+                        oldBubble = this
+                    }
+                }
+                tabStrip.addView(bubble)
             }
-
-
         }
     }
 
+    fun setOnBubbleClickListener(listener: OnBubbleClickListener) {
+        clickListener = listener
+    }
 
-    private var oldBubble: Bubble? = null
+    private fun selectBubble(bubble: Bubble) {
+        if (oldBubble?.id == bubble.id) return
+        bubble.isSelected = true
+        oldBubble?.isSelected = false
+        oldBubble = bubble
+    }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setMenuResource(menuResource: Int) {
-        val menu = (MenuParser(context).parse(menuResource))
-        removeAllViews()
-        Log.e("menu ", "-->" + menu.size)
-        menu.forEach { it ->
-            if (it.id == 0) {
-                throw ExceptionInInitializerError("Id is not added in menu item")
+    /**
+     * Programmatically update the visual selection state (e.g. from NavController's
+     * OnDestinationChangedListener). Does NOT dispatch to [OnBubbleClickListener] — that
+     * would create an infinite loop when wired to navigation.
+     */
+    fun setSelectedWithId(id: Int) {
+        for (i in 0 until tabStrip.childCount) {
+            val child = tabStrip.getChildAt(i)
+            if (child is Bubble && child.id == id) {
+                selectBubble(child)
+                return
             }
-            it.apply {
-                it.horizontalPadding = horizontalPaddingParam
-                it.verticalPadding = verticalPaddingParam
-                it.iconSize = iconSizeParam
-                it.iconPadding = iconPaddingParam
-                it.customFont = customFontParam
-                it.disabledIconColor = disabledIconColorParam
-                it.titleSize = titleSizeParam
-                it.cornerRadius = cornerRadiusParam
-                it.disableTitleColor = disableTitleColor
-            }
-            addView(Bubble(context, it).apply {
-                if (it.checked) {
-                    this.isSelected = true
-                    oldBubble = this
-                }
-                setOnClickListener {
-                    val b = it.id
-                    if (oldBubble != null && oldBubble!!.id != b) {
-                        (it as Bubble).isSelected = !it.isSelected
-                        oldBubble!!.isSelected = false
-                    }
-                    oldBubble = it as Bubble
-                    if (onBubbleClickListener != null) {
-                        onBubbleClickListener!!.onBubbleClick(it.id)
-                    }
-                }
-            })
-
         }
-        invalidate()
+        // Center bubble is a floating action button — no persistent selected state.
     }
 }

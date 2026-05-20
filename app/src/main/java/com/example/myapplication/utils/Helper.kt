@@ -1,11 +1,9 @@
 package com.example.myapplication.utils
 
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.viewpager.widget.ViewPager
-import com.example.myapplication.R
-import io.ak1.BubbleTabBar
+import io.ak1.SimpleTabBar
 
 /**
  * @author : Akshay Sharma
@@ -14,9 +12,9 @@ import io.ak1.BubbleTabBar
  **/
 
 /**
- * Extension method to connect [ViewPager] from [BubbleTabBar]
+ * Extension method to connect [ViewPager] from [SimpleTabBar]
  */
-fun BubbleTabBar.setupViewPager(viewPager: ViewPager) {
+fun SimpleTabBar.setupViewPager(viewPager: ViewPager) {
     viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
         override fun onPageScrolled(
             position: Int,
@@ -34,7 +32,7 @@ fun BubbleTabBar.setupViewPager(viewPager: ViewPager) {
 }
 
 /**
- * Extension method to connect [NavController] from [BubbleTabBar]
+ * Extension method to connect [NavController] from [SimpleTabBar]
  */
 fun onNavDestinationSelected(
     itemId: Int,

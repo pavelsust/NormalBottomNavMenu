@@ -42,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="parent">
 
-        <io.ak1.BubbleTabBar
+        <io.ak1.SimpleTabBar
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="18dp"
                 android:id="@+id/bubbleTabBar"
