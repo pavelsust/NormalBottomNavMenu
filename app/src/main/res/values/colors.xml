@@ -15,4 +15,7 @@
     <color name="documents">#3498db</color>
     <color name="settings">#2ecc71</color>
 
+    <color name="tab_profile">#9C27B0</color>
+    <color name="tab_icon_unselected">#9E9E9E</color>
+
 </resources>
