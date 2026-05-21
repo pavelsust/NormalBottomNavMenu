@@ -14,7 +14,7 @@
         tools:replace="android:theme,android:icon"
         tools:targetApi="31">
         <activity
-            android:name=".SimpleTabbar"
+            android:name=".NormalBottomBar"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>

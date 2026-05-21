@@ -1,4 +1,4 @@
-package io.ak1.parser
+package io.ak1
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Xml
 import androidx.annotation.MenuRes
-import io.ak1.R
 import org.xmlpull.v1.XmlPullParser.*
 
 class MenuParser(private val context: Context) {

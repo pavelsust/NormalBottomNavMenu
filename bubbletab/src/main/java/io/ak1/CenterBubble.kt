@@ -1,4 +1,4 @@
-package io.ak1
+package com.rock.library
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -8,12 +8,11 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.view.Gravity
-import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
-import io.ak1.parser.MenuItem
+import io.ak1.MenuItem
 
 /**
  * Floating center circle button.
@@ -57,7 +56,7 @@ class CenterBubble(
 
         elevation = item.centerItemElevation
         outlineProvider = object : ViewOutlineProvider() {
-            override fun getOutline(view: View, outline: Outline) {
+            override fun getOutline(view: android.view.View, outline: Outline) {
                 outline.setOval(0, 0, view.width, view.height)
             }
         }

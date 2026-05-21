@@ -9,7 +9,6 @@ import android.view.Gravity
 import android.widget.LinearLayout
 import androidx.annotation.IdRes
 import androidx.annotation.RequiresApi
-import io.ak1.parser.MenuParser
 
 class SimpleTabBar : LinearLayout {
     private var onBubbleClickListener: OnBubbleClickListener? = null

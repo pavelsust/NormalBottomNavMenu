@@ -7,15 +7,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import com.example.myapplication.databinding.SimpleTabBarBinding
+import com.example.myapplication.databinding.ActivityNormalBottombarBinding
 
-class SimpleTabbar : AppCompatActivity() {
+class NormalBottomBar : AppCompatActivity() {
 
-    private lateinit var binding: SimpleTabBarBinding
+    private lateinit var binding: ActivityNormalBottombarBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = SimpleTabBarBinding.inflate(layoutInflater)
+        binding = ActivityNormalBottombarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         applyWindowInsets()

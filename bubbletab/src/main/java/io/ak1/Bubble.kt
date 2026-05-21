@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import io.ak1.parser.MenuItem
 
 class Bubble(context: Context, private val item: MenuItem) : FrameLayout(context) {
     private val icon = ImageView(context)

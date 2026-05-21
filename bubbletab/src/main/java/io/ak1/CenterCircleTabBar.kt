@@ -8,10 +8,10 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import io.ak1.parser.MenuItem
+import com.rock.library.CenterBubble
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-class BubbleTabBar @JvmOverloads constructor(
+class CenterCircleTabBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

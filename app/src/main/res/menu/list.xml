@@ -13,6 +13,12 @@
             android:icon="@drawable/ic_clock"
             android:title="@string/logger"
             android:color="@color/home" />
+
+    <item
+        android:id="@+id/log2"
+        android:icon="@drawable/ic_clock"
+        android:title="@string/logger"
+        android:color="@color/home" />
     <item
             android:id="@+id/doc"
             android:icon="@drawable/ic_folder"

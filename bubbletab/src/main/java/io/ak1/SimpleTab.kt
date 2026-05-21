@@ -10,11 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import com.rock.library.collapse
-import com.rock.library.expand
-import com.rock.library.setColorStateListAnimator
-import io.ak1.parser.MenuItem
-import kotlin.text.toInt
 
 @SuppressLint("ViewConstructor")
 class SimpleTab(context: Context, private var item: MenuItem) : FrameLayout(context) {

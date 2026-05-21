@@ -1,8 +1,7 @@
-package io.ak1.parser
+package io.ak1
 
 import android.graphics.Color
 import androidx.annotation.DrawableRes
-import androidx.annotation.FontRes
 
 data class MenuItem(
     val id: Int,

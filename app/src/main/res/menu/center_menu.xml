@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  IDs here must match the destination IDs in bubble_nav_graph.xml so that
+  BubbleActivity can call navController.navigate(menuItemId) directly.
+  android:color drives iconColor in MenuItem: selected icon/text tint for side
+  tabs, and the circle fill colour for the centre button.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home"
+        android:title="Home"
+        android:color="#FF5722"
+        android:checked="true" />
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        android:title="Search"
+        android:color="#2196F3" />
+
+    <!-- Centre floating button (index 2). iconColor = circle fill colour. -->
+    <item
+        android:id="@+id/log"
+        android:icon="@drawable/ic_add"
+        android:title="Add"
+        android:color="#E91E63" />
+
+    <item
+        android:id="@+id/doc"
+        android:icon="@drawable/ic_notifications"
+        android:title="Alerts"
+        android:color="#4CAF50" />
+
+    <item
+        android:id="@+id/setting"
+        android:icon="@drawable/ic_person"
+        android:title="Profile"
+        android:color="#9C27B0" />
+
+</menu>
