@@ -15,6 +15,11 @@ class Bubble(context: Context, private val item: MenuItem) : FrameLayout(context
     private val title = TextView(context)
     private val container = LinearLayout(context)
 
+    private val dpAsPixels = item.horizontalPadding.toInt()
+    private val dpAsPixelsVertical = item.verticalPadding.toInt()
+    private val dpAsPixelsIcons = item.iconSize.toInt()
+    private val dpAsIconPadding = item.iconPadding.toInt()
+
     init {
         id = item.id
         isClickable = true
@@ -27,20 +32,24 @@ class Bubble(context: Context, private val item: MenuItem) : FrameLayout(context
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
             ).apply {
-                setPadding(
-                    item.horizontalPadding.toInt(),
-                    item.verticalPadding.toInt(),
-                    item.horizontalPadding.toInt(),
-                    item.verticalPadding.toInt()
-                )
+                gravity = Gravity.CENTER
             }
+            setPadding(dpAsPixels, dpAsPixelsVertical, dpAsPixels, dpAsPixelsVertical)
         }
 
         icon.apply {
-            layoutParams = LinearLayout.LayoutParams(item.iconSize.toInt(), item.iconSize.toInt())
+            layoutParams = LinearLayout.LayoutParams(dpAsPixelsIcons, dpAsPixelsIcons)
             setImageResource(item.icon)
             isEnabled = item.enabled
-            if (!isEnabled) setColorFilter(Color.GRAY)
+            if (isEnabled) {
+                setColorStateListAnimator(
+                    color = item.iconColor,
+                    unselectedColor = item.disabledIconColor
+                )
+            } else {
+                setColorFilter(Color.GRAY)
+                this@Bubble.setOnClickListener(null)
+            }
         }
 
         title.apply {
@@ -66,8 +75,20 @@ class Bubble(context: Context, private val item: MenuItem) : FrameLayout(context
         addView(container)
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        icon.jumpDrawablesToCurrentState()
+        if (!enabled && isSelected) {
+            isSelected = false
+        }
+    }
+
     override fun setSelected(selected: Boolean) {
         super.setSelected(selected)
-        title.setTextColor(if (selected) item.iconColor else item.disableTitleColor)
+        if (selected) {
+            title.expand(item.iconColor, item.title.toString())
+        } else {
+            title.collapse(item.iconColor, item.disableTitleColor, item.title.toString())
+        }
     }
 }

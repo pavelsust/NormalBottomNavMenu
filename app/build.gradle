@@ -57,7 +57,7 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
     implementation 'androidx.preference:preference-ktx:1.1.1'
-
+    implementation 'com.intuit.sdp:sdp-android:1.1.1'
     implementation project(":bubbletab")
     //implementation 'com.github.pavelsust:NormalBottomNavMenu:1.1.1'
 }
