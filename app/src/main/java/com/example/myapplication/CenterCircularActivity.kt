@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -75,23 +74,7 @@ class CenterCircularActivity : AppCompatActivity() {
      * (bubbletab_bar_height / bubbletab_center_item_size).
      */
     private fun setupTabBar() {
-        val dp = resources.displayMetrics.density
         val items = MenuParser(this).parse(R.menu.center_menu)
-
-        items.forEach { item ->
-            item.iconSize = 24 * dp
-            item.titleSize = 10 * dp
-            item.horizontalPadding = 8 * dp
-            item.verticalPadding = 6 * dp
-            item.disabledIconColor = Color.parseColor("#9E9E9E")
-            item.disableTitleColor = Color.parseColor("#9E9E9E")
-        }
-
-        items.getOrNull(CENTER_INDEX)?.also {
-            it.centerItemElevation = 8 * dp
-            it.centerIconColor = Color.WHITE
-        }
-
         binding.bubbleTabBar.setMenu(items, CENTER_INDEX)
     }
 
