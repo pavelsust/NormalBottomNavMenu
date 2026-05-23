@@ -64,6 +64,7 @@ class SimpleTab(context: Context, private var item: MenuItem) : FrameLayout(cont
                     //setPaddingRelative(dpAsIconPadding, 0, 0, 0)
                     gravity = Gravity.CENTER_VERTICAL
                     textAlignment = TEXT_ALIGNMENT_GRAVITY
+                    topMargin = item.titleTopPadding.toInt()
                 }
 
             maxLines = 1

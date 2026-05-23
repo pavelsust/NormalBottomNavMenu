@@ -21,6 +21,7 @@ data class MenuItem(
     var iconPadding: Float = 0f
     var disabledIconColor: Int = Color.GRAY
     var disableTitleColor: Int = Color.GRAY
+    var titleTopPadding: Float = 0f
     var centerItemSize: Float = 0f
     var centerItemElevation: Float = 0f
     var centerIconColor: Int = Color.WHITE

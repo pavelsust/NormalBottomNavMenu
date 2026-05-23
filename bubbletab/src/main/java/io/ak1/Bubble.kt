@@ -56,7 +56,9 @@ class Bubble(context: Context, private val item: MenuItem) : FrameLayout(context
             layoutParams = LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT
-            )
+            ).apply {
+                topMargin = item.titleTopPadding.toInt()
+            }
             text = item.title
             maxLines = 1
             textSize = item.titleSize / resources.displayMetrics.scaledDensity

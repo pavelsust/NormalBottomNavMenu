@@ -21,6 +21,7 @@ class SimpleTabBar : LinearLayout {
     private var cornerRadiusParam: Float = 0F
     private var customFontParam: Int = 0
     private var disableTitleColor : Int = Color.GRAY
+    private var titleTopPaddingParam: Float = 0F
 
     init {
         orientation = VERTICAL
@@ -121,6 +122,10 @@ class SimpleTabBar : LinearLayout {
                     resources.getDimension(R.dimen.bubble_corner_radius)
                 )
                 disableTitleColor = attributes.getColor(R.styleable.BubbleTabBar_bubbletab_title_disable_color, Color.GRAY)
+                titleTopPaddingParam = attributes.getDimension(
+                    R.styleable.BubbleTabBar_bubbletab_title_top_padding,
+                    resources.getDimension(R.dimen.bubble_title_top_padding)
+                )
                 if (menuResource >= 0) {
                     setMenuResource(menuResource)
                 }
@@ -154,6 +159,7 @@ class SimpleTabBar : LinearLayout {
                 it.titleSize = titleSizeParam
                 it.cornerRadius = cornerRadiusParam
                 it.disableTitleColor = disableTitleColor
+                it.titleTopPadding = titleTopPaddingParam
             }
             addView(SimpleTab(context, it).apply {
                 if (it.checked) {

@@ -18,6 +18,7 @@
         <attr name="bubbletab_icon_size" format="dimension" />
         <attr name="bubbletab_title_size" format="dimension" />
         <attr name="bubbletab_tab_corner_radius" format="dimension" />
+        <attr name="bubbletab_title_top_padding" format="dimension" />
 
         <!-- centre FAB -->
         <attr name="bubbletab_center_item_size" format="dimension" />

@@ -38,6 +38,7 @@ class CenterCircleTabBar @JvmOverloads constructor(
     private var cornerRadiusParam: Float = 0f
     private var customFontParam: Int = 0
     private var disableTitleColorParam: Int = Color.GRAY
+    private var titleTopPaddingParam: Float = 0f
 
     // Center FAB style params
     private var centerItemElevationParam: Float = 0f
@@ -55,6 +56,7 @@ class CenterCircleTabBar @JvmOverloads constructor(
         verticalPaddingParam = resources.getDimension(R.dimen.bubble_vertical_padding)
         iconPaddingParam = resources.getDimension(R.dimen.bubble_icon_padding)
         cornerRadiusParam = resources.getDimension(R.dimen.bubble_corner_radius)
+        titleTopPaddingParam = resources.getDimension(R.dimen.bubble_title_top_padding)
 
         if (attrs != null) {
             val ta = context.obtainStyledAttributes(attrs, R.styleable.BubbleTabBar, defStyleAttr, 0)
@@ -97,6 +99,9 @@ class CenterCircleTabBar @JvmOverloads constructor(
                 )
                 centerIconColorParam = ta.getColor(
                     R.styleable.BubbleTabBar_bubbletab_center_icon_color, Color.WHITE
+                )
+                titleTopPaddingParam = ta.getDimension(
+                    R.styleable.BubbleTabBar_bubbletab_title_top_padding, titleTopPaddingParam
                 )
             } finally {
                 ta.recycle()
@@ -141,6 +146,7 @@ class CenterCircleTabBar @JvmOverloads constructor(
             // Color fields: only apply bar param when item still holds the MenuItem default
             if (item.disabledIconColor == Color.GRAY) item.disabledIconColor = disabledIconColorParam
             if (item.disableTitleColor == Color.GRAY) item.disableTitleColor = disableTitleColorParam
+            if (item.titleTopPadding == 0f) item.titleTopPadding = titleTopPaddingParam
 
             if (index == centerIndex) {
                 val circleSize = if (item.centerItemSize > 0) item.centerItemSize.toInt() else centerItemSize
@@ -232,5 +238,15 @@ class CenterCircleTabBar @JvmOverloads constructor(
         bubble.isSelected = true
         oldBubble?.isSelected = false
         oldBubble = bubble
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val adjustedHeightSpec = if (heightMode != MeasureSpec.EXACTLY) {
+            MeasureSpec.makeMeasureSpec(barHeight, MeasureSpec.EXACTLY)
+        } else {
+            heightMeasureSpec
+        }
+        super.onMeasure(widthMeasureSpec, adjustedHeightSpec)
     }
 }
