@@ -2,11 +2,14 @@ package io.ak1
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
+import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.IdRes
@@ -198,6 +201,8 @@ class CenterCircleTabBar @JvmOverloads constructor(
                 tabStrip.addView(bubble)
             }
         }
+        // Install the touch delegate after layout so positions are known.
+        post { installTouchDelegate() }
     }
 
     /** Alias for [setOnBubbleClickListener], matching SimpleTabBar's API. */
@@ -242,7 +247,11 @@ class CenterCircleTabBar @JvmOverloads constructor(
                 return
             }
         }
-        // Center bubble is a floating action button — no persistent selected state.
+        // Center tab clicked — deselect the active side tab.
+        if (centerBubble?.id == id) {
+            oldBubble?.isSelected = false
+            oldBubble = null
+        }
     }
 
     private fun selectBubble(bubble: Bubble) {
@@ -261,4 +270,35 @@ class CenterCircleTabBar @JvmOverloads constructor(
         }
         super.onMeasure(widthMeasureSpec, adjustedHeightSpec)
     }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        post { installTouchDelegate() }
+    }
+
+    override fun onDetachedFromWindow() {
+        (parent as? ViewGroup)?.touchDelegate = null
+        super.onDetachedFromWindow()
+    }
+
+    /**
+     * Registers a TouchDelegate on the parent for the half of the center circle that protrudes
+     * above this view's layout bounds. Without this, touches on the upper half are delivered to
+     * whatever sibling sits above the bar (e.g. the fragment container) and the circle misses them.
+     */
+    private fun installTouchDelegate() {
+        val bubble = centerBubble ?: return
+        val parentView = parent as? ViewGroup ?: return
+        // Upper-half rect in parent coordinate space: from the visual top of the circle
+        // (this.top + translationY) up to this view's top edge.
+        val protrusion = (-bubble.translationY).toInt()
+        val rect = Rect(
+            left + bubble.left,
+            top - protrusion,
+            left + bubble.right,
+            top + protrusion  // lower edge = bottom of upper half = centre of circle
+        )
+        parentView.touchDelegate = TouchDelegate(rect, bubble)
+    }
 }
+
