@@ -36,6 +36,8 @@
         app:bubbletab_tab_corner_radius="@dimen/_25sdp"
         app:bubbletab_bar_height="60dp"
         app:bubbletab_center_item_size="64dp"
+        app:bubbletab_center_bubble_color="#FF5722"
+        app:bubbletab_center_bubble_stroke_color="@color/white"
         app:bubbletab_title_top_padding= "@dimen/_2sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -43,11 +43,14 @@ class CenterCircleTabBar @JvmOverloads constructor(
     // Center FAB style params
     private var centerItemElevationParam: Float = 0f
     private var centerIconColorParam: Int = Color.WHITE
+    private var centerBubbleColorParam: Int = Color.WHITE
+    private var centerBubbleStrokeColorParam: Int = 0
 
     init {
         val dp = resources.displayMetrics.density
         barHeight = (56 * dp).toInt()
         centerItemSize = (64 * dp).toInt()
+        centerBubbleStrokeColorParam = context.getColor(R.color.bubble_center_stroke_default)
 
         // Dimension defaults from dimens.xml (same defaults SimpleTabBar uses)
         iconSizeParam = resources.getDimension(R.dimen.bubble_icon_size)
@@ -100,6 +103,13 @@ class CenterCircleTabBar @JvmOverloads constructor(
                 centerIconColorParam = ta.getColor(
                     R.styleable.BubbleTabBar_bubbletab_center_icon_color, Color.WHITE
                 )
+                centerBubbleColorParam = ta.getColor(
+                    R.styleable.BubbleTabBar_bubbletab_center_bubble_color, Color.WHITE
+                )
+                val strokeFromXml = ta.getColor(
+                    R.styleable.BubbleTabBar_bubbletab_center_bubble_stroke_color, 0
+                )
+                if (strokeFromXml != 0) centerBubbleStrokeColorParam = strokeFromXml
                 titleTopPaddingParam = ta.getDimension(
                     R.styleable.BubbleTabBar_bubbletab_title_top_padding, titleTopPaddingParam
                 )
@@ -154,6 +164,8 @@ class CenterCircleTabBar @JvmOverloads constructor(
                 // Apply center FAB params as defaults
                 if (item.centerItemElevation == 0f) item.centerItemElevation = centerItemElevationParam
                 if (item.centerIconColor == Color.WHITE) item.centerIconColor = centerIconColorParam
+                if (item.centerBubbleColor == Color.WHITE) item.centerBubbleColor = centerBubbleColorParam
+                if (item.centerBubbleStrokeColor == 0) item.centerBubbleStrokeColor = centerBubbleStrokeColorParam
 
                 // Empty placeholder so side tabs divide remaining width equally.
                 tabStrip.addView(View(context).apply {

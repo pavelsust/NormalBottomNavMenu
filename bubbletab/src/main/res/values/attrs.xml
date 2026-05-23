@@ -24,6 +24,8 @@
         <attr name="bubbletab_center_item_size" format="dimension" />
         <attr name="bubbletab_center_item_elevation" format="dimension" />
         <attr name="bubbletab_center_icon_color" format="color" />
+        <attr name="bubbletab_center_bubble_color" format="color" />
+        <attr name="bubbletab_center_bubble_stroke_color" format="color" />
     </declare-styleable>
 
     <!-- Per-menu-item attributes parsed by MenuParser -->

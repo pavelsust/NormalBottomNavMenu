@@ -25,4 +25,6 @@ data class MenuItem(
     var centerItemSize: Float = 0f
     var centerItemElevation: Float = 0f
     var centerIconColor: Int = Color.WHITE
+    var centerBubbleColor: Int = Color.WHITE
+    var centerBubbleStrokeColor: Int = 0
 }

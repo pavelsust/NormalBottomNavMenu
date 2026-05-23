@@ -42,8 +42,8 @@ class CenterBubble(
 
         val fillDrawable = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
-            setColor(item.iconColor)
-            setStroke(strokeWidth, darken(item.iconColor, 0.75f))
+            setColor(item.centerBubbleColor)
+            setStroke(strokeWidth, item.centerBubbleStrokeColor)
         }
 
         // Ripple over the fill: learned from OneBottomNavigationBar's touch feedback on the
@@ -76,11 +76,4 @@ class CenterBubble(
         }
     }
 
-    /** Darkens a color by the given factor (0 = black, 1 = unchanged). */
-    private fun darken(color: Int, factor: Float): Int {
-        val r = (Color.red(color) * factor).toInt().coerceIn(0, 255)
-        val g = (Color.green(color) * factor).toInt().coerceIn(0, 255)
-        val b = (Color.blue(color) * factor).toInt().coerceIn(0, 255)
-        return Color.argb(Color.alpha(color), r, g, b)
-    }
 }
