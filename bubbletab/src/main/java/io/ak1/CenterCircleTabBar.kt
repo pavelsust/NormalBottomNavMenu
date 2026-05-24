@@ -282,23 +282,28 @@ class CenterCircleTabBar @JvmOverloads constructor(
     }
 
     /**
-     * Registers a TouchDelegate on the parent for the half of the center circle that protrudes
-     * above this view's layout bounds. Without this, touches on the upper half are delivered to
-     * whatever sibling sits above the bar (e.g. the fragment container) and the circle misses them.
+     * Registers a TouchDelegate on the parent covering the full visual circle plus [touchPadding]
+     * on every side. The extra padding ensures edge/boundary taps reliably hit the circle even
+     * when the finger lands a few dp outside the tight visual boundary.
+     *
+     * The rect spans the entire visual circle (upper half protrudes above this view's bounds,
+     * lower half is within), so both halves benefit from the expanded target.
      */
     private fun installTouchDelegate() {
         val bubble = centerBubble ?: return
         val parentView = parent as? ViewGroup ?: return
-        // Upper-half rect in parent coordinate space: from the visual top of the circle
-        // (this.top + translationY) up to this view's top edge.
         val protrusion = (-bubble.translationY).toInt()
+        val tp = touchPadding
         val rect = Rect(
-            left + bubble.left,
-            top - protrusion,
-            left + bubble.right,
-            top + protrusion  // lower edge = bottom of upper half = centre of circle
+            left + bubble.left - tp,
+            top - protrusion - tp,
+            left + bubble.right + tp,
+            top + protrusion + tp
         )
         parentView.touchDelegate = TouchDelegate(rect, bubble)
     }
+
+    private val touchPadding: Int
+        get() = (8 * resources.displayMetrics.density).toInt()
 }
 
