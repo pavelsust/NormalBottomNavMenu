@@ -2,12 +2,10 @@ package io.ak1
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
-import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -201,8 +199,8 @@ class CenterCircleTabBar @JvmOverloads constructor(
                 tabStrip.addView(bubble)
             }
         }
-        // Install the touch delegate after layout so positions are known.
-        post { installTouchDelegate() }
+        // Install the touch guard after layout so positions are known.
+        post { installTouchGuard() }
     }
 
     /** Alias for [setOnBubbleClickListener], matching SimpleTabBar's API. */
@@ -273,34 +271,59 @@ class CenterCircleTabBar @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        post { installTouchDelegate() }
+        post { installTouchGuard() }
     }
 
     override fun onDetachedFromWindow() {
-        (parent as? ViewGroup)?.touchDelegate = null
+        removeTouchGuard()
         super.onDetachedFromWindow()
     }
 
-    /**
-     * Registers a TouchDelegate on the parent covering the full visual circle plus [touchPadding]
-     * on every side. The extra padding ensures edge/boundary taps reliably hit the circle even
-     * when the finger lands a few dp outside the tight visual boundary.
-     *
-     * The rect spans the entire visual circle (upper half protrudes above this view's bounds,
-     * lower half is within), so both halves benefit from the expanded target.
-     */
-    private fun installTouchDelegate() {
+    // ---------------------------------------------------------------------------
+    // Touch guard — replaces the broken TouchDelegate approach.
+    //
+    // TouchDelegate is checked inside View.onTouchEvent on the parent, which is
+    // only reached when NO child handles the event. FragmentContainerView always
+    // consumes ACTION_DOWN via its RecyclerView/ViewPager2, so the parent's
+    // onTouchEvent is never called and the TouchDelegate is never triggered.
+    //
+    // Instead we add a transparent, clickable View directly into the parent.
+    // Because it is added last it has the highest z-order and receives ACTION_DOWN
+    // before FragmentContainerView for any touch in the protrusion zone.
+    // Its click listener calls bubble.performClick() so the bar's own
+    // OnBubbleClickListener fires exactly as if the user tapped within the bar.
+    // ---------------------------------------------------------------------------
+
+    private var touchGuard: View? = null
+
+    private fun installTouchGuard() {
         val bubble = centerBubble ?: return
         val parentView = parent as? ViewGroup ?: return
+
+        removeTouchGuard()
+
         val protrusion = (-bubble.translationY).toInt()
         val tp = touchPadding
-        val rect = Rect(
-            left + bubble.left - tp,
-            top - protrusion - tp,
-            left + bubble.right + tp,
-            top + protrusion + tp
-        )
-        parentView.touchDelegate = TouchDelegate(rect, bubble)
+        val guardWidth = bubble.width + tp * 2
+        val guardHeight = protrusion + tp
+
+        val guard = View(context).apply {
+            isClickable = true
+            isFocusable = true
+            setOnClickListener { bubble.performClick() }
+        }
+
+        parentView.addView(guard, ViewGroup.LayoutParams(guardWidth, guardHeight))
+        // Position the guard so it sits exactly over the protruding half of the circle.
+        guard.x = (left + bubble.left - tp).toFloat()
+        guard.y = (top - protrusion - tp).toFloat()
+
+        touchGuard = guard
+    }
+
+    private fun removeTouchGuard() {
+        touchGuard?.let { (parent as? ViewGroup)?.removeView(it) }
+        touchGuard = null
     }
 
     private val touchPadding: Int
