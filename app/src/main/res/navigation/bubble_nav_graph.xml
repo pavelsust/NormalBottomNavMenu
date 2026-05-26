@@ -6,9 +6,9 @@
 
     <fragment
         android:id="@+id/home"
-        android:name="com.example.myapplication.ui.samples.childFragments.Fragment1"
+        android:name="com.example.myapplication.ui.samples.childFragments.FragmentHome"
         android:label="fragment_1"
-        tools:layout="@layout/fragment_1" />
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/search"

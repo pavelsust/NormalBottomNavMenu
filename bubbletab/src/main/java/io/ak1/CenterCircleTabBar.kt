@@ -275,7 +275,13 @@ class CenterCircleTabBar @JvmOverloads constructor(
     }
 
     override fun onDetachedFromWindow() {
-        removeTouchGuard()
+        // Only clear the reference — do NOT call parent.removeView(guard) here.
+        // The guard is a sibling in the same parent ViewGroup; the parent's own
+        // dispatchDetachedFromWindow() loop will reach it naturally. Calling
+        // removeView() mid-loop compacts the mChildren array while the loop is
+        // iterating with a stale count snapshot, leaving a null slot that triggers
+        // "Attempt to invoke dispatchDetachedFromWindow() on a null object" NPE.
+        touchGuard = null
         super.onDetachedFromWindow()
     }
 
@@ -321,9 +327,12 @@ class CenterCircleTabBar @JvmOverloads constructor(
         touchGuard = guard
     }
 
+    // Called only from installTouchGuard() when the view is fully attached,
+    // so parent.removeView() is always safe here (no mid-iteration risk).
     private fun removeTouchGuard() {
-        touchGuard?.let { (parent as? ViewGroup)?.removeView(it) }
+        val guard = touchGuard ?: return
         touchGuard = null
+        (parent as? ViewGroup)?.removeView(guard)
     }
 
     private val touchPadding: Int

@@ -13,6 +13,8 @@
         android:theme="@style/Theme.MyApplication"
         tools:replace="android:theme,android:icon"
         tools:targetApi="31">
+
+
         <activity
             android:name=".CenterCircularActivity"
             android:exported="true"
@@ -22,6 +24,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".NormalBottomBar"
+            android:exported="true"
+            android:theme="@style/Theme.MyApplication">
         </activity>
     </application>
 
